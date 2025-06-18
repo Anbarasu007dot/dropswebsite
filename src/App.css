@@ -1,0 +1,261 @@
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Animated button hover effect */
+.animated-btn {
+  transition: transform 0.18s cubic-bezier(0.4,0,0.2,1), box-shadow 0.18s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform, box-shadow;
+}
+.animated-btn:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+.animated-btn:hover, .animated-btn:focus-visible {
+  transform: scale(1.05);
+  box-shadow: 0 4px 18px 0 rgba(37,99,235,0.12), 0 1.5px 4px 0 rgba(0,0,0,0.08);
+}
+
+/* Product card overlay slide-up */
+.product-card .overlay {
+  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s cubic-bezier(0.4,0,0.2,1);
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.product-card:hover .overlay,
+.product-card:focus-within .overlay {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .product-card .overlay {
+    display: none;
+  }
+}
+
+.product-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(37,99,235,0.04);
+}
+
+/* Remove blue outline/line on product card hover/focus */
+.product-card:focus,
+.product-card:focus-visible,
+.product-card:active,
+.product-card *:focus,
+.product-card *:focus-visible,
+.product-card *:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Only show shadow and overlay for the hovered product card */
+.product-card:hover,
+.product-card:focus-within {
+  box-shadow: 0 4px 18px 0 rgba(37,99,235,0.12), 0 1.5px 4px 0 rgba(0,0,0,0.08);
+  z-index: 2;
+}
+
+/* Enhanced animated border for product card on hover */
+.product-card {
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: -7px; left: -7px; right: -7px; bottom: -7px;
+  border-radius: 1.2rem;
+  pointer-events: none;
+  z-index: 3;
+  border: 5px solid transparent;
+  background: conic-gradient(from 0deg, #6eb9ff, #b3e0ff, #6eb9ff 80%, transparent 100%) border-box;
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 0 24px 6px #6eb9ff66, 0 0 0 4px #b3e0ff44;
+  animation: none;
+}
+.product-card:hover::before, .product-card:focus-within::before {
+  opacity: 1;
+  animation: border-conic-spin 1.2s linear infinite;
+}
+@keyframes border-conic-spin {
+  0% { background: conic-gradient(from 0deg, #6eb9ff, #b3e0ff, #6eb9ff 80%, transparent 100%) border-box; }
+  100% { background: conic-gradient(from 360deg, #6eb9ff, #b3e0ff, #6eb9ff 80%, transparent 100%) border-box; }
+}
+@media (not (hover: hover)) {
+  .product-card:hover::before, .product-card:focus-within::before {
+    border: 5px solid #6eb9ff;
+    background: none;
+    animation: none;
+    opacity: 1;
+  }
+}
+.product-card:hover, .product-card:focus-within {
+  box-shadow: 0 4px 24px 0 rgba(110,185,255,0.32), 0 2px 8px 0 rgba(0,0,0,0.12);
+}
+
+/* Careers page animated progress bar */
+.career-bar-animate {
+  animation: career-bar-loading 1.6s cubic-bezier(0.4,0,0.2,1) infinite;
+}
+@keyframes career-bar-loading {
+  0% { left: -60px; }
+  100% { left: 100%; }
+}
+
+/* Careers page animated progress bar (infinite, smooth) */
+.progress-bar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 6px;
+  width: 100%;
+  max-width: 150px;
+  position: relative;
+}
+.progress-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6eb9ff, #3f87ff);
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(110, 185, 255, 0.6);
+  animation: infiniteProgress 2.5s ease-in-out infinite;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.progress-bar-track::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  border-radius: 10px;
+  background: linear-gradient(120deg, rgba(255,255,255,0.12) 30%, rgba(110,185,255,0.08) 70%);
+}
+@keyframes infiniteProgress {
+  0%   { width: 0%; }
+  80%  { width: 100%; }
+  100% { width: 0%; }
+}
+
+/* New Animated Loading Bar for Career Page */
+.animated-loading-bar {
+  width: 130px;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 12px;
+}
+
+@media (min-width: 640px) {
+  .animated-loading-bar {
+    margin-top: 0;
+    margin-left: 12px;
+  }
+}
+
+.loading-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6eb9ff, #3f87ff);
+  box-shadow: 0 0 10px rgba(110, 185, 255, 0.5);
+  border-radius: inherit;
+  animation: loadPulse 2.8s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer effect */
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmerMove 1.5s ease-in-out infinite;
+}
+
+@keyframes loadPulse {
+  0%   { width: 0%; }
+  80%  { width: 100%; }
+  100% { width: 0%; }
+}
+
+@keyframes shimmerMove {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.progress-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+@media (max-width: 768px) {
+  .progress-wrapper {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .progress-bar-track {
+    max-width: 100%;
+    width: 100%;
+  }
+}
