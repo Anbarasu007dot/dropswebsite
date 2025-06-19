@@ -9,9 +9,9 @@ const transporter = nodemailer.createTransporter({
     pass: process.env.SMTP_PASS,
   },
   // Enhanced connection settings to handle network issues
-  connectionTimeout: 30000, // 30 seconds
-  greetingTimeout: 10000, // 10 seconds
-  socketTimeout: 30000, // 30 seconds
+  connectionTimeout: 60000, // 60 seconds
+  greetingTimeout: 30000, // 30 seconds
+  socketTimeout: 60000, // 60 seconds
   // Additional options for better reliability
   pool: true,
   maxConnections: 5,
@@ -50,6 +50,7 @@ const verifyConnection = async (retries = 3) => {
         console.log('   - Network connectivity');
         console.log('   - Firewall settings');
         console.log('   - For Gmail: Use App Password instead of regular password');
+        console.log('   - Try using port 465 with secure: true for SSL');
         return false;
       }
       
@@ -118,6 +119,8 @@ export const sendEmail = async ({ to, subject, html }: EmailOptions) => {
       throw new Error('SMTP authentication failed. Please check your email credentials.');
     } else if (errorMessage.includes('ENOTFOUND')) {
       throw new Error('SMTP server not found. Please check your SMTP host configuration.');
+    } else if (errorMessage.includes('ETIMEDOUT')) {
+      throw new Error('SMTP connection timed out. Please check your network and firewall settings.');
     }
     
     throw error;
