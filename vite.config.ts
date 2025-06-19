@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react({
-      exclude: /src\/lib\/supabase\.ts$/
+      include: "**/*.{jsx,tsx}"
     }),
     mode === 'development' &&
     myTagger(),
