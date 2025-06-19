@@ -10,7 +10,9 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(),
+    react({
+      exclude: "**/src/lib/supabase.ts"
+    }),
     mode === 'development' &&
     myTagger(),
   ].filter(Boolean),
