@@ -111,14 +111,41 @@ const Feedback = () => {
 
       console.log('📦 Payload:', payload);
 
-      const response = await fetch('http://localhost:5000/send-email', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload),
-      });
+      // Try multiple server endpoints for better reliability
+      const serverEndpoints = [
+        'http://localhost:5000/send-email',
+        'http://localhost:3001/send-email'
+      ];
+
+      let response;
+      let lastError;
+
+      for (const endpoint of serverEndpoints) {
+        try {
+          console.log(`📡 Trying endpoint: ${endpoint}`);
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload),
+          });
+          
+          if (response.ok) {
+            console.log(`✅ Successfully connected to ${endpoint}`);
+            break;
+          }
+        } catch (error) {
+          console.log(`❌ Failed to connect to ${endpoint}:`, error);
+          lastError = error;
+          continue;
+        }
+      }
+
+      if (!response || !response.ok) {
+        throw lastError || new Error('All server endpoints failed');
+      }
 
       console.log('📡 Response status:', response.status);
       
@@ -139,7 +166,7 @@ const Feedback = () => {
     } catch (err) {
       console.error('❌ Network error:', err);
       setSubmitStatus('error');
-      toast.error("Network error. Please check your connection and try again.");
+      toast.error("Unable to connect to email server. Please try again later or contact us directly at info@dropschemicals.com");
     } finally {
       setSubmitting(false);
     }

@@ -36,7 +36,13 @@ const verifyConnection = async () => {
 // Verify connection asynchronously without blocking startup
 verifyConnection();
 
-export const sendEmail = async (to: string, subject: string, text: string, html?: string) => {
+interface EmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+}
+
+export const sendEmail = async ({ to, subject, html }: EmailOptions) => {
   // Check if SMTP is configured before attempting to send
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     throw new Error('SMTP credentials not configured. Please set SMTP_USER and SMTP_PASS in your .env file.');
@@ -46,8 +52,7 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
     from: process.env.SMTP_USER,
     to,
     subject,
-    text,
-    html: html || text.replace(/\n/g, '<br>'), // Convert line breaks to HTML if no HTML provided
+    html,
   };
 
   console.log('📧 Sending email with options:', {

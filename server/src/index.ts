@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import { sendEmail } from './mailer';
+
+dotenv.config();
 
 // Debug environment variables
 console.log('🔍 Environment variables check:');
@@ -164,11 +167,11 @@ Sent from Drops Chemicals website feedback form
     console.log('📤 Sending email...');
     console.log('Subject:', subject);
     
-    await sendEmail(
-      process.env.SMTP_USER || 'info@dropschemicals.com', // to
+    await sendEmail({
+      to: process.env.SMTP_USER || 'info@dropschemicals.com',
       subject,
-      emailBody
-    );
+      html: emailBody.replace(/\n/g, '<br>')
+    });
 
     console.log('✅ Email sent successfully');
     res.status(200).json({ 
