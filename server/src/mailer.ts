@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
   secure: false, // true for 465, false for other ports
@@ -8,33 +8,66 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-  // Add connection timeout and other options to handle network issues
-  connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 5000, // 5 seconds
-  socketTimeout: 10000, // 10 seconds
+  // Enhanced connection settings to handle network issues
+  connectionTimeout: 30000, // 30 seconds
+  greetingTimeout: 10000, // 10 seconds
+  socketTimeout: 30000, // 30 seconds
+  // Additional options for better reliability
+  pool: true,
+  maxConnections: 5,
+  maxMessages: 100,
+  rateLimit: 14, // max 14 messages/second
+  // TLS options for better compatibility
+  tls: {
+    rejectUnauthorized: false,
+    ciphers: 'SSLv3'
+  },
+  // Debug mode for troubleshooting
+  debug: process.env.NODE_ENV === 'development',
+  logger: process.env.NODE_ENV === 'development'
 });
 
-// Only verify connection if SMTP credentials are provided
-const verifyConnection = async () => {
+// Enhanced connection verification with retry logic
+const verifyConnection = async (retries = 3) => {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.log('⚠️  SMTP credentials not configured. Email functionality will be disabled.');
     return false;
   }
 
-  try {
-    await transporter.verify();
-    console.log('✅ SMTP server is ready to take our messages');
-    return true;
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.log('❌ SMTP connection error:', errorMessage);
-    console.log('💡 Please check your SMTP configuration in the .env file');
-    return false;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      console.log(`🔄 Attempting SMTP connection (${attempt}/${retries})...`);
+      await transporter.verify();
+      console.log('✅ SMTP server is ready to take our messages');
+      return true;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log(`❌ SMTP connection attempt ${attempt} failed:`, errorMessage);
+      
+      if (attempt === retries) {
+        console.log('💡 SMTP connection failed after all retries. Please check:');
+        console.log('   - SMTP credentials in .env file');
+        console.log('   - Network connectivity');
+        console.log('   - Firewall settings');
+        console.log('   - For Gmail: Use App Password instead of regular password');
+        return false;
+      }
+      
+      // Wait before retry (exponential backoff)
+      const delay = Math.pow(2, attempt) * 1000;
+      console.log(`⏳ Waiting ${delay}ms before retry...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
   }
+  
+  return false;
 };
 
 // Verify connection asynchronously without blocking startup
-verifyConnection();
+let smtpReady = false;
+verifyConnection().then(ready => {
+  smtpReady = ready;
+});
 
 interface EmailOptions {
   to: string;
@@ -48,8 +81,17 @@ export const sendEmail = async ({ to, subject, html }: EmailOptions) => {
     throw new Error('SMTP credentials not configured. Please set SMTP_USER and SMTP_PASS in your .env file.');
   }
 
+  // If SMTP wasn't ready during startup, try to verify again
+  if (!smtpReady) {
+    console.log('🔄 SMTP not ready, attempting connection...');
+    smtpReady = await verifyConnection(1);
+    if (!smtpReady) {
+      throw new Error('SMTP server is not available. Please check your email configuration.');
+    }
+  }
+
   const mailOptions = {
-    from: process.env.SMTP_USER,
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
     to,
     subject,
     html,
@@ -62,10 +104,22 @@ export const sendEmail = async ({ to, subject, html }: EmailOptions) => {
   });
 
   try {
-    return await transporter.sendMail(mailOptions);
+    const result = await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent successfully:', result.messageId);
+    return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('❌ Failed to send email:', errorMessage);
+    
+    // Provide more specific error messages
+    if (errorMessage.includes('Greeting never received')) {
+      throw new Error('SMTP connection timeout. Please check your network connection and SMTP server settings.');
+    } else if (errorMessage.includes('Invalid login')) {
+      throw new Error('SMTP authentication failed. Please check your email credentials.');
+    } else if (errorMessage.includes('ENOTFOUND')) {
+      throw new Error('SMTP server not found. Please check your SMTP host configuration.');
+    }
+    
     throw error;
   }
 };

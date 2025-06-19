@@ -83,41 +83,19 @@ const Contact = () => {
 
       console.log('📦 Payload:', payload);
 
-      // Try multiple server endpoints for better reliability
-      const serverEndpoints = [
-        'http://localhost:5000/send-email',
-        'http://localhost:3001/send-email'
-      ];
-
-      let response;
-      let lastError;
-
-      for (const endpoint of serverEndpoints) {
-        try {
-          console.log(`📡 Trying endpoint: ${endpoint}`);
-          response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload),
-          });
-          
-          if (response.ok) {
-            console.log(`✅ Successfully connected to ${endpoint}`);
-            break;
-          }
-        } catch (error) {
-          console.log(`❌ Failed to connect to ${endpoint}:`, error);
-          lastError = error;
-          continue;
-        }
-      }
-
-      if (!response || !response.ok) {
-        throw lastError || new Error('All server endpoints failed');
-      }
+      // Use the proxied API endpoint to avoid mixed content issues
+      const apiEndpoint = '/api/send-email';
+      
+      console.log(`📡 Sending request to: ${apiEndpoint}`);
+      
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload),
+      });
 
       console.log('📡 Response status:', response.status);
       
@@ -147,7 +125,14 @@ const Contact = () => {
     } catch (error) {
       console.error('❌ Network error:', error);
       setSubmitStatus('error');
-      toast.error("Unable to connect to email server. Please try again later or contact us directly at info@dropschemicals.com");
+      
+      // Provide more helpful error messages
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (errorMessage.includes('Failed to fetch')) {
+        toast.error("Unable to connect to the server. Please ensure the backend server is running and try again.");
+      } else {
+        toast.error("Network error occurred. Please try again later or contact us directly at info@dropschemicals.com");
+      }
     } finally {
       setIsSubmitting(false);
     }
