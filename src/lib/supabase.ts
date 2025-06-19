@@ -10,8 +10,8 @@ console.log('Key exists:', !!supabaseAnonKey)
 // Check if Supabase is configured
 const isSupabaseConfigured = supabaseUrl && 
   supabaseAnonKey && 
-  supabaseUrl !== 'your_supabase_project_url_here' &&
-  supabaseAnonKey !== 'your_supabase_anon_key_here' &&
+  supabaseUrl !== haxfxxrukroasoapkevd &&
+  supabaseAnonKey !== eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhheGZ4eHJ1a3JvYXNvYXBrZXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MTM5OTAsImV4cCI6MjA2NTQ4OTk5MH0.cVifp9iIPt5v1BSVrbxkvC_BjiJyyxgwVSdyrsGTcng &&
   supabaseUrl.trim() !== '' &&
   supabaseAnonKey.trim() !== ''
 
