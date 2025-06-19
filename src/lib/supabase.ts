@@ -15,12 +15,15 @@ const isSupabaseConfigured = supabaseUrl &&
   supabaseUrl.trim() !== '' &&
   supabaseAnonKey.trim() !== ''
 
+// Declare supabase variable at top level
+let supabase: any
+
 if (!isSupabaseConfigured) {
   console.warn('⚠️ Supabase not configured yet')
   console.warn('Please click the "Connect to Supabase" button in the top right to set up your Supabase project')
   
   // Create a mock client that will show helpful errors
-  export const supabase = {
+  supabase = {
     from: () => ({
       select: () => Promise.resolve({ data: [], error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
       insert: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
@@ -34,7 +37,7 @@ if (!isSupabaseConfigured) {
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
     }
-  } as any
+  }
 } else {
   // Validate URL format only if configured
   try {
@@ -46,7 +49,7 @@ if (!isSupabaseConfigured) {
 
   console.log('✅ Initializing Supabase client...')
 
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false
@@ -132,3 +135,6 @@ export interface UpdateBlogPost {
   status?: 'draft' | 'published' | 'archived'
   published_at?: string
 }
+
+// Export supabase at the end of the file
+export { supabase }
