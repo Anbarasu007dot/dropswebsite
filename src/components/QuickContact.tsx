@@ -229,9 +229,9 @@ export const QuickContact = () => {
                   }`}
                   style={{ 
                     animationDelay: `${index * 0.2}s`,
-                    backgroundColor: 'transparent',
-                    backdropFilter: 'none',
-                    background: 'transparent'
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    background: 'rgba(255, 255, 255, 0.08)'
                   }}
                 >
                   <CardContent className="py-4 px-8 flex flex-row items-center h-full">
@@ -255,9 +255,9 @@ export const QuickContact = () => {
             <Card 
               className="border-white/20 shadow-lg"
               style={{
-                backgroundColor: 'transparent',
-                backdropFilter: 'none',
-                background: 'transparent'
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(255, 255, 255, 0.08)'
               }}
             >
               <CardContent className="p-8">
@@ -288,9 +288,9 @@ export const QuickContact = () => {
                         required
                         className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
                         style={{
-                          backgroundColor: 'transparent',
-                          backdropFilter: 'none',
-                          background: 'transparent'
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          backdropFilter: 'blur(5px)',
+                          background: 'rgba(255, 255, 255, 0.05)'
                         }}
                       />
                     </div>
@@ -305,9 +305,9 @@ export const QuickContact = () => {
                         required
                         className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
                         style={{
-                          backgroundColor: 'transparent',
-                          backdropFilter: 'none',
-                          background: 'transparent'
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          backdropFilter: 'blur(5px)',
+                          background: 'rgba(255, 255, 255, 0.05)'
                         }}
                       />
                     </div>
@@ -323,9 +323,9 @@ export const QuickContact = () => {
                       required
                       className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
                       style={{
-                        backgroundColor: 'transparent',
-                        backdropFilter: 'none',
-                        background: 'transparent'
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        backdropFilter: 'blur(5px)',
+                        background: 'rgba(255, 255, 255, 0.05)'
                       }}
                     />
                   </div>
@@ -341,9 +341,9 @@ export const QuickContact = () => {
                       rows={5}
                       className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-textarea resize-none ${submitStatus === 'error' ? 'border-red-400' : ''}`}
                       style={{
-                        backgroundColor: 'transparent',
-                        backdropFilter: 'none',
-                        background: 'transparent'
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        backdropFilter: 'blur(5px)',
+                        background: 'rgba(255, 255, 255, 0.05)'
                       }}
                     />
                   </div>

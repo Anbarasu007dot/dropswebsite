@@ -150,9 +150,9 @@ export const Testimonials = () => {
                 className="testimonial-hover min-w-[320px] max-w-xs w-[320px] flex-shrink-0 border-white/20 text-white"
                 style={{ 
                   flex: "0 0 320px",
-                  backgroundColor: 'transparent',
-                  backdropFilter: 'none',
-                  background: 'transparent'
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(255, 255, 255, 0.05)'
                 }}
               >
                 <CardContent className="p-8">
@@ -186,9 +186,9 @@ export const Testimonials = () => {
                 className="testimonial-hover min-w-[320px] max-w-xs w-[320px] flex-shrink-0 border-white/20 text-white"
                 style={{ 
                   flex: "0 0 320px",
-                  backgroundColor: 'transparent',
-                  backdropFilter: 'none',
-                  background: 'transparent'
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(255, 255, 255, 0.05)'
                 }}
               >
                 <CardContent className="p-8">
@@ -240,9 +240,9 @@ export const Testimonials = () => {
                 className="testimonial-hover min-w-[85vw] max-w-[90vw] flex-shrink-0 border-white/20 text-white"
                 style={{ 
                   flex: "0 0 85vw",
-                  backgroundColor: 'transparent',
-                  backdropFilter: 'none',
-                  background: 'transparent'
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(255, 255, 255, 0.05)'
                 }}
               >
                 <CardContent className="p-8">
@@ -276,9 +276,9 @@ export const Testimonials = () => {
                 className="testimonial-hover min-w-[85vw] max-w-[90vw] flex-shrink-0 border-white/20 text-white"
                 style={{ 
                   flex: "0 0 85vw",
-                  backgroundColor: 'transparent',
-                  backdropFilter: 'none',
-                  background: 'transparent'
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(255, 255, 255, 0.05)'
                 }}
               >
                 <CardContent className="p-8">
