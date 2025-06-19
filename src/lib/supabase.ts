@@ -23,19 +23,73 @@ if (!isSupabaseConfigured) {
   console.warn('Please click the "Connect to Supabase" button in the top right to set up your Supabase project')
   
   // Create a mock client that will show helpful errors
+  const mockError = { message: 'Supabase not configured. Please connect to Supabase first.' }
+  
+  // Create a chainable mock query builder
+  const createMockQueryBuilder = () => ({
+    select: () => createMockQueryBuilder(),
+    insert: () => createMockQueryBuilder(),
+    update: () => createMockQueryBuilder(),
+    delete: () => createMockQueryBuilder(),
+    order: () => createMockQueryBuilder(),
+    limit: () => createMockQueryBuilder(),
+    range: () => createMockQueryBuilder(),
+    eq: () => createMockQueryBuilder(),
+    neq: () => createMockQueryBuilder(),
+    gt: () => createMockQueryBuilder(),
+    gte: () => createMockQueryBuilder(),
+    lt: () => createMockQueryBuilder(),
+    lte: () => createMockQueryBuilder(),
+    like: () => createMockQueryBuilder(),
+    ilike: () => createMockQueryBuilder(),
+    is: () => createMockQueryBuilder(),
+    in: () => createMockQueryBuilder(),
+    contains: () => createMockQueryBuilder(),
+    containedBy: () => createMockQueryBuilder(),
+    rangeGt: () => createMockQueryBuilder(),
+    rangeGte: () => createMockQueryBuilder(),
+    rangeLt: () => createMockQueryBuilder(),
+    rangeLte: () => createMockQueryBuilder(),
+    rangeAdjacent: () => createMockQueryBuilder(),
+    overlaps: () => createMockQueryBuilder(),
+    textSearch: () => createMockQueryBuilder(),
+    match: () => createMockQueryBuilder(),
+    not: () => createMockQueryBuilder(),
+    or: () => createMockQueryBuilder(),
+    filter: () => createMockQueryBuilder(),
+    then: (resolve: any) => resolve({ data: [], error: mockError }),
+    catch: (reject: any) => reject(mockError)
+  })
+
+  // Create a mock channel
+  const createMockChannel = () => ({
+    on: () => createMockChannel(),
+    subscribe: () => ({ unsubscribe: () => {} }),
+    unsubscribe: () => {}
+  })
+
   supabase = {
-    from: () => ({
-      select: () => Promise.resolve({ data: [], error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
-      insert: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
-      update: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
-      delete: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
-    }),
+    from: () => createMockQueryBuilder(),
+    channel: () => createMockChannel(),
+    removeChannel: () => {},
+    removeAllChannels: () => {},
     auth: {
-      signUp: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
-      signIn: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please connect to Supabase first.' } }),
+      signUp: () => Promise.resolve({ data: null, error: mockError }),
+      signIn: () => Promise.resolve({ data: null, error: mockError }),
+      signInWithPassword: () => Promise.resolve({ data: null, error: mockError }),
       signOut: () => Promise.resolve({ error: null }),
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    },
+    storage: {
+      from: () => ({
+        upload: () => Promise.resolve({ data: null, error: mockError }),
+        download: () => Promise.resolve({ data: null, error: mockError }),
+        remove: () => Promise.resolve({ data: null, error: mockError }),
+        list: () => Promise.resolve({ data: [], error: mockError }),
+        getPublicUrl: () => ({ data: { publicUrl: '' } })
+      })
     }
   }
 } else {
