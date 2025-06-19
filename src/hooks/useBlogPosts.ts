@@ -1,276 +1,189 @@
 import { useState, useEffect } from 'react'
-import { supabase, BlogPost, CreateBlogPost, UpdateBlogPost } from '@/lib/supabase'
+import { BlogPost, CreateBlogPost, UpdateBlogPost } from '@/lib/supabase'
 import { toast } from 'sonner'
 
-export const useBlogPosts = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  // Fetch all blog posts
-  const fetchPosts = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      console.log('Fetching blog posts...')
-      
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Supabase fetch error:', error)
-        throw error
-      }
-      
-      console.log('Fetched posts:', data?.length || 0, 'posts')
-      setPosts(data || [])
-    } catch (err) {
-      console.error('Error fetching posts:', err)
-      setError(err instanceof Error ? err.message : 'Failed to fetch posts')
-      toast.error('Failed to fetch blog posts')
-    } finally {
-      setLoading(false)
-    }
+// Mock data for demonstration
+const mockPosts: BlogPost[] = [
+  {
+    id: '1',
+    title: 'The Future of Water Treatment: Advanced Chemical Solutions',
+    slug: 'future-water-treatment-advanced-chemical-solutions',
+    excerpt: 'Explore the latest innovations in water treatment technology and how advanced chemical solutions are revolutionizing the industry.',
+    content: 'Water treatment technology has evolved significantly over the past decade...',
+    featured_image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+    meta_title: 'Future of Water Treatment',
+    meta_description: 'Latest innovations in water treatment technology',
+    tags: ['water treatment', 'technology', 'innovation'],
+    category: 'water-treatment',
+    status: 'published' as const,
+    author_id: 'admin',
+    published_at: '2024-01-15T00:00:00Z',
+    created_at: '2024-01-15T00:00:00Z',
+    updated_at: '2024-01-15T00:00:00Z',
+    view_count: 150
+  },
+  {
+    id: '2',
+    title: 'Sustainable Agriculture: The Role of Eco-Friendly Fertilizers',
+    slug: 'sustainable-agriculture-eco-friendly-fertilizers',
+    excerpt: 'Discover how eco-friendly fertilizers and micronutrients are helping farmers achieve higher yields while protecting the environment.',
+    content: 'Sustainable agriculture practices are becoming increasingly important...',
+    featured_image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=600&q=80',
+    meta_title: 'Sustainable Agriculture',
+    meta_description: 'Eco-friendly fertilizers for sustainable farming',
+    tags: ['agriculture', 'sustainability', 'fertilizers'],
+    category: 'agriculture',
+    status: 'published' as const,
+    author_id: 'admin',
+    published_at: '2024-01-12T00:00:00Z',
+    created_at: '2024-01-12T00:00:00Z',
+    updated_at: '2024-01-12T00:00:00Z',
+    view_count: 200
+  },
+  {
+    id: '3',
+    title: 'Industrial Hygiene: Best Practices for Chemical Safety',
+    slug: 'industrial-hygiene-chemical-safety-practices',
+    excerpt: 'Learn about the latest safety protocols and best practices for handling industrial chemicals in manufacturing environments.',
+    content: 'Chemical safety in industrial environments requires strict protocols...',
+    featured_image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=600&q=80',
+    meta_title: 'Industrial Chemical Safety',
+    meta_description: 'Best practices for chemical safety in industry',
+    tags: ['safety', 'industrial', 'chemicals'],
+    category: 'safety',
+    status: 'published' as const,
+    author_id: 'admin',
+    published_at: '2024-01-10T00:00:00Z',
+    created_at: '2024-01-10T00:00:00Z',
+    updated_at: '2024-01-10T00:00:00Z',
+    view_count: 175
   }
+];
 
-  // Create a new blog post
+export const useBlogPosts = () => {
+  const [posts, setPosts] = useState<BlogPost[]>(mockPosts);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Mock fetch function
+  const fetchPosts = async () => {
+    setLoading(true);
+    setError(null);
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setPosts(mockPosts);
+    setLoading(false);
+  };
+
+  // Mock create function
   const createPost = async (postData: CreateBlogPost): Promise<BlogPost | null> => {
+    setLoading(true);
+    
     try {
-      console.log('Creating new post:', postData.title)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Generate slug if not provided
-      if (!postData.slug) {
-        postData.slug = postData.title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/(^-|-$)/g, '')
-      }
-
-      // Prepare the data for insertion
-      const insertData = {
+      const newPost: BlogPost = {
+        id: Date.now().toString(),
         title: postData.title,
-        slug: postData.slug,
-        excerpt: postData.excerpt || null,
-        content: postData.content || null,
-        featured_image: postData.featured_image || null,
-        meta_title: postData.meta_title || null,
-        meta_description: postData.meta_description || null,
+        slug: postData.slug || postData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        excerpt: postData.excerpt || '',
+        content: postData.content || '',
+        featured_image: postData.featured_image || '',
+        meta_title: postData.meta_title || '',
+        meta_description: postData.meta_description || '',
         tags: postData.tags || [],
         category: postData.category || 'general',
         status: postData.status || 'draft',
-        published_at: postData.status === 'published' ? new Date().toISOString() : null,
-        author_id: null // Let the database handle this with uid()
-      }
-
-      console.log('Insert data:', insertData)
-
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .insert([insertData])
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Supabase insert error:', error)
-        throw error
-      }
+        author_id: 'admin',
+        published_at: postData.status === 'published' ? new Date().toISOString() : undefined,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        view_count: 0
+      };
       
-      console.log('Created post:', data)
-      
-      // Update local state immediately
-      setPosts(prev => [data, ...prev])
-      toast.success('Blog post created successfully!')
-      
-      // Refetch to ensure consistency
-      await fetchPosts()
-      
-      return data
+      setPosts(prev => [newPost, ...prev]);
+      toast.success('Blog post created successfully!');
+      return newPost;
     } catch (err) {
-      console.error('Create post error:', err)
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create post'
-      setError(errorMessage)
-      toast.error(errorMessage)
-      return null
+      toast.error('Failed to create post');
+      return null;
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  // Update a blog post
+  // Mock update function
   const updatePost = async (id: string, updates: UpdateBlogPost): Promise<BlogPost | null> => {
+    setLoading(true);
+    
     try {
-      console.log('Updating post:', id, updates)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Set published_at when changing status to published
-      const updateData = { ...updates }
-      if (updates.status === 'published') {
-        const currentPost = posts.find(p => p.id === id)
-        if (currentPost && !currentPost.published_at) {
-          updateData.published_at = new Date().toISOString()
-        }
-      }
-
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .update(updateData)
-        .eq('id', id)
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Supabase update error:', error)
-        throw error
-      }
-
-      console.log('Updated post:', data)
+      setPosts(prev => prev.map(post => 
+        post.id === id 
+          ? { 
+              ...post, 
+              ...updates, 
+              updated_at: new Date().toISOString(),
+              published_at: updates.status === 'published' && !post.published_at 
+                ? new Date().toISOString() 
+                : post.published_at
+            }
+          : post
+      ));
       
-      // Update local state immediately
-      setPosts(prev => prev.map(post => post.id === id ? data : post))
-      toast.success('Blog post updated successfully!')
-      
-      // Refetch to ensure consistency
-      await fetchPosts()
-      
-      return data
+      const updatedPost = posts.find(p => p.id === id);
+      toast.success('Blog post updated successfully!');
+      return updatedPost || null;
     } catch (err) {
-      console.error('Update post error:', err)
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update post'
-      setError(errorMessage)
-      toast.error(errorMessage)
-      return null
+      toast.error('Failed to update post');
+      return null;
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  // Delete a blog post
+  // Mock delete function
   const deletePost = async (id: string): Promise<boolean> => {
+    setLoading(true);
+    
     try {
-      console.log('Deleting post:', id)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', id)
-
-      if (error) {
-        console.error('Supabase delete error:', error)
-        throw error
-      }
-
-      console.log('Deleted post:', id)
-      
-      // Update local state immediately
-      setPosts(prev => prev.filter(post => post.id !== id))
-      toast.success('Blog post deleted successfully!')
-      
-      return true
+      setPosts(prev => prev.filter(post => post.id !== id));
+      toast.success('Blog post deleted successfully!');
+      return true;
     } catch (err) {
-      console.error('Delete post error:', err)
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete post'
-      setError(errorMessage)
-      toast.error(errorMessage)
-      return false
+      toast.error('Failed to delete post');
+      return false;
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  // Get published posts for public blog page
+  // Mock get published posts
   const getPublishedPosts = async (): Promise<BlogPost[]> => {
-    try {
-      console.log('Fetching published posts...')
-      
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('status', 'published')
-        .order('published_at', { ascending: false })
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockPosts.filter(post => post.status === 'published');
+  };
 
-      if (error) {
-        console.error('Get published posts error:', error)
-        throw error
-      }
-      
-      console.log('Fetched published posts:', data?.length || 0, 'posts')
-      return data || []
-    } catch (err) {
-      console.error('Failed to fetch published posts:', err)
-      return []
-    }
-  }
-
-  // Get post by slug for public viewing
+  // Mock get post by slug
   const getPostBySlug = async (slug: string): Promise<BlogPost | null> => {
-    try {
-      console.log('Fetching post by slug:', slug)
-      
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('slug', slug)
-        .eq('status', 'published')
-        .single()
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockPosts.find(post => post.slug === slug && post.status === 'published') || null;
+  };
 
-      if (error) {
-        console.error('Get post by slug error:', error)
-        throw error
-      }
-
-      // Increment view count
-      await supabase
-        .from('blog_posts')
-        .update({ view_count: data.view_count + 1 })
-        .eq('id', data.id)
-
-      console.log('Fetched post by slug:', data.title)
-      return data
-    } catch (err) {
-      console.error('Failed to fetch post by slug:', err)
-      return null
-    }
-  }
-
-  // Subscribe to real-time changes
+  // Initialize with mock data
   useEffect(() => {
-    console.log('Setting up blog posts hook...')
-    fetchPosts()
-
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('blog_posts_changes')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'blog_posts' },
-        (payload) => {
-          console.log('Real-time update received:', payload)
-          
-          // Handle different types of changes
-          if (payload.eventType === 'INSERT') {
-            console.log('New post inserted:', payload.new)
-            setPosts(prev => {
-              // Check if post already exists to avoid duplicates
-              const exists = prev.some(p => p.id === payload.new.id)
-              if (!exists) {
-                return [payload.new as BlogPost, ...prev]
-              }
-              return prev
-            })
-          } else if (payload.eventType === 'UPDATE') {
-            console.log('Post updated:', payload.new)
-            setPosts(prev => prev.map(post => 
-              post.id === payload.new.id ? payload.new as BlogPost : post
-            ))
-          } else if (payload.eventType === 'DELETE') {
-            console.log('Post deleted:', payload.old)
-            setPosts(prev => prev.filter(post => post.id !== payload.old.id))
-          }
-        }
-      )
-      .subscribe((status) => {
-        console.log('Subscription status:', status)
-      })
-
-    return () => {
-      console.log('Cleaning up blog posts subscription...')
-      subscription.unsubscribe()
-    }
-  }, [])
+    fetchPosts();
+  }, []);
 
   return {
     posts,
@@ -282,5 +195,5 @@ export const useBlogPosts = () => {
     getPublishedPosts,
     getPostBySlug,
     refetch: fetchPosts
-  }
-}
+  };
+};
