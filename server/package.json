@@ -1,17 +1,13 @@
 {
-  "name": "drops-chemicals-server",
+  "name": "server",
   "version": "1.0.0",
-  "description": "Email server for Drops Chemicals website",
+  "description": "Backend server for the application",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/index.js"
   },
-  "keywords": ["email", "server", "express", "typescript"],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
@@ -23,7 +19,7 @@
     "@types/cors": "^2.8.17",
     "@types/node": "^20.10.4",
     "@types/nodemailer": "^6.4.14",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.6.2",
     "typescript": "^5.3.3"
   }
 }
