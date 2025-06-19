@@ -12,7 +12,7 @@ export const useBlogPosts = () => {
     try {
       setLoading(true)
       setError(null)
-      console.log('Fetching blog posts...')
+      console.log('📡 Fetching blog posts...')
       
       const { data, error } = await supabase
         .from('blog_posts')
@@ -20,16 +20,27 @@ export const useBlogPosts = () => {
         .order('created_at', { ascending: false })
 
       if (error) {
-        console.error('Supabase fetch error:', error)
-        throw error
+        console.error('❌ Supabase fetch error:', error)
+        
+        // Handle specific error cases
+        if (error.message.includes('relation "blog_posts" does not exist')) {
+          throw new Error('Blog posts table does not exist. Please run database migrations first.')
+        } else if (error.message.includes('Invalid API key')) {
+          throw new Error('Invalid Supabase API key. Please check your credentials.')
+        } else if (error.message.includes('Project not found')) {
+          throw new Error('Supabase project not found. Please check your project URL.')
+        } else {
+          throw new Error(`Database error: ${error.message}`)
+        }
       }
       
-      console.log('Fetched posts:', data?.length || 0, 'posts')
+      console.log('✅ Fetched posts:', data?.length || 0, 'posts')
       setPosts(data || [])
     } catch (err) {
-      console.error('Error fetching posts:', err)
-      setError(err instanceof Error ? err.message : 'Failed to fetch posts')
-      toast.error('Failed to fetch blog posts')
+      console.error('❌ Error fetching posts:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch posts'
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -38,7 +49,7 @@ export const useBlogPosts = () => {
   // Create a new blog post
   const createPost = async (postData: CreateBlogPost): Promise<BlogPost | null> => {
     try {
-      console.log('Creating new post:', postData.title)
+      console.log('📝 Creating new post:', postData.title)
       
       // Generate slug if not provided
       if (!postData.slug) {
@@ -64,7 +75,7 @@ export const useBlogPosts = () => {
         author_id: null // Let the database handle this with uid()
       }
 
-      console.log('Insert data:', insertData)
+      console.log('📦 Insert data:', insertData)
 
       const { data, error } = await supabase
         .from('blog_posts')
@@ -73,11 +84,11 @@ export const useBlogPosts = () => {
         .single()
 
       if (error) {
-        console.error('Supabase insert error:', error)
-        throw error
+        console.error('❌ Supabase insert error:', error)
+        throw new Error(`Failed to create post: ${error.message}`)
       }
       
-      console.log('Created post:', data)
+      console.log('✅ Created post:', data)
       
       // Update local state immediately
       setPosts(prev => [data, ...prev])
@@ -88,7 +99,7 @@ export const useBlogPosts = () => {
       
       return data
     } catch (err) {
-      console.error('Create post error:', err)
+      console.error('❌ Create post error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Failed to create post'
       setError(errorMessage)
       toast.error(errorMessage)
@@ -99,7 +110,7 @@ export const useBlogPosts = () => {
   // Update a blog post
   const updatePost = async (id: string, updates: UpdateBlogPost): Promise<BlogPost | null> => {
     try {
-      console.log('Updating post:', id, updates)
+      console.log('📝 Updating post:', id, updates)
       
       // Set published_at when changing status to published
       const updateData = { ...updates }
@@ -118,11 +129,11 @@ export const useBlogPosts = () => {
         .single()
 
       if (error) {
-        console.error('Supabase update error:', error)
-        throw error
+        console.error('❌ Supabase update error:', error)
+        throw new Error(`Failed to update post: ${error.message}`)
       }
 
-      console.log('Updated post:', data)
+      console.log('✅ Updated post:', data)
       
       // Update local state immediately
       setPosts(prev => prev.map(post => post.id === id ? data : post))
@@ -133,7 +144,7 @@ export const useBlogPosts = () => {
       
       return data
     } catch (err) {
-      console.error('Update post error:', err)
+      console.error('❌ Update post error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Failed to update post'
       setError(errorMessage)
       toast.error(errorMessage)
@@ -144,7 +155,7 @@ export const useBlogPosts = () => {
   // Delete a blog post
   const deletePost = async (id: string): Promise<boolean> => {
     try {
-      console.log('Deleting post:', id)
+      console.log('🗑️ Deleting post:', id)
       
       const { error } = await supabase
         .from('blog_posts')
@@ -152,11 +163,11 @@ export const useBlogPosts = () => {
         .eq('id', id)
 
       if (error) {
-        console.error('Supabase delete error:', error)
-        throw error
+        console.error('❌ Supabase delete error:', error)
+        throw new Error(`Failed to delete post: ${error.message}`)
       }
 
-      console.log('Deleted post:', id)
+      console.log('✅ Deleted post:', id)
       
       // Update local state immediately
       setPosts(prev => prev.filter(post => post.id !== id))
@@ -164,7 +175,7 @@ export const useBlogPosts = () => {
       
       return true
     } catch (err) {
-      console.error('Delete post error:', err)
+      console.error('❌ Delete post error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete post'
       setError(errorMessage)
       toast.error(errorMessage)
@@ -175,7 +186,7 @@ export const useBlogPosts = () => {
   // Get published posts for public blog page
   const getPublishedPosts = async (): Promise<BlogPost[]> => {
     try {
-      console.log('Fetching published posts...')
+      console.log('📡 Fetching published posts...')
       
       const { data, error } = await supabase
         .from('blog_posts')
@@ -184,14 +195,14 @@ export const useBlogPosts = () => {
         .order('published_at', { ascending: false })
 
       if (error) {
-        console.error('Get published posts error:', error)
-        throw error
+        console.error('❌ Get published posts error:', error)
+        throw new Error(`Failed to fetch published posts: ${error.message}`)
       }
       
-      console.log('Fetched published posts:', data?.length || 0, 'posts')
+      console.log('✅ Fetched published posts:', data?.length || 0, 'posts')
       return data || []
     } catch (err) {
-      console.error('Failed to fetch published posts:', err)
+      console.error('❌ Failed to fetch published posts:', err)
       return []
     }
   }
@@ -199,7 +210,7 @@ export const useBlogPosts = () => {
   // Get post by slug for public viewing
   const getPostBySlug = async (slug: string): Promise<BlogPost | null> => {
     try {
-      console.log('Fetching post by slug:', slug)
+      console.log('📡 Fetching post by slug:', slug)
       
       const { data, error } = await supabase
         .from('blog_posts')
@@ -209,8 +220,8 @@ export const useBlogPosts = () => {
         .single()
 
       if (error) {
-        console.error('Get post by slug error:', error)
-        throw error
+        console.error('❌ Get post by slug error:', error)
+        throw new Error(`Failed to fetch post: ${error.message}`)
       }
 
       // Increment view count
@@ -219,17 +230,17 @@ export const useBlogPosts = () => {
         .update({ view_count: data.view_count + 1 })
         .eq('id', data.id)
 
-      console.log('Fetched post by slug:', data.title)
+      console.log('✅ Fetched post by slug:', data.title)
       return data
     } catch (err) {
-      console.error('Failed to fetch post by slug:', err)
+      console.error('❌ Failed to fetch post by slug:', err)
       return null
     }
   }
 
   // Subscribe to real-time changes
   useEffect(() => {
-    console.log('Setting up blog posts hook...')
+    console.log('🔄 Setting up blog posts hook...')
     fetchPosts()
 
     // Set up real-time subscription
@@ -238,11 +249,11 @@ export const useBlogPosts = () => {
       .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'blog_posts' },
         (payload) => {
-          console.log('Real-time update received:', payload)
+          console.log('🔄 Real-time update received:', payload)
           
           // Handle different types of changes
           if (payload.eventType === 'INSERT') {
-            console.log('New post inserted:', payload.new)
+            console.log('➕ New post inserted:', payload.new)
             setPosts(prev => {
               // Check if post already exists to avoid duplicates
               const exists = prev.some(p => p.id === payload.new.id)
@@ -252,22 +263,22 @@ export const useBlogPosts = () => {
               return prev
             })
           } else if (payload.eventType === 'UPDATE') {
-            console.log('Post updated:', payload.new)
+            console.log('📝 Post updated:', payload.new)
             setPosts(prev => prev.map(post => 
               post.id === payload.new.id ? payload.new as BlogPost : post
             ))
           } else if (payload.eventType === 'DELETE') {
-            console.log('Post deleted:', payload.old)
+            console.log('🗑️ Post deleted:', payload.old)
             setPosts(prev => prev.filter(post => post.id !== payload.old.id))
           }
         }
       )
       .subscribe((status) => {
-        console.log('Subscription status:', status)
+        console.log('📡 Subscription status:', status)
       })
 
     return () => {
-      console.log('Cleaning up blog posts subscription...')
+      console.log('🧹 Cleaning up blog posts subscription...')
       subscription.unsubscribe()
     }
   }, [])
