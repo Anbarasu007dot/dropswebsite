@@ -136,11 +136,68 @@ app.post('/send-email', async (req, res) => {
           </div>
         </div>
       `;
+    } else if (formType === 'feedback') {
+      // Feedback form
+      const { company, date, completedBy, contact, email, products, experience, price, quality, expectations, suggestions, overall } = formData;
+      
+      if (!company || !date || !completedBy || !contact || !email || !products || !experience || !price || !quality || !expectations || !suggestions || !overall) {
+        console.error('❌ Missing required feedback form fields');
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required fields: all feedback form fields are required'
+        });
+      }
+
+      emailSubject = `Customer Feedback from ${company}`;
+      emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
+            Customer Feedback Submission
+          </h2>
+          
+          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #1e40af; margin-top: 0;">Company Information</h3>
+            <p><strong>Company:</strong> ${company}</p>
+            <p><strong>Date:</strong> ${date}</p>
+            <p><strong>Completed By:</strong> ${completedBy}</p>
+            <p><strong>Contact:</strong> ${contact}</p>
+            <p><strong>Email:</strong> ${email}</p>
+          </div>
+          
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb;">
+            <h3 style="color: #1e40af; margin-top: 0;">Product & Service Feedback</h3>
+            <p><strong>Products/Services Purchased:</strong> ${products}</p>
+            <p><strong>Purchasing Experience:</strong> ${experience}</p>
+            <p><strong>Price Rating:</strong> ${price}</p>
+            <p><strong>Quality Rating:</strong> ${quality}</p>
+          </div>
+          
+          <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+            <h3 style="color: #92400e; margin-top: 0;">Detailed Feedback</h3>
+            <p><strong>Did products meet expectations:</strong></p>
+            <p style="line-height: 1.6; white-space: pre-wrap; margin-left: 20px;">${expectations}</p>
+            
+            <p><strong>Suggestions for improvement:</strong></p>
+            <p style="line-height: 1.6; white-space: pre-wrap; margin-left: 20px;">${suggestions}</p>
+            
+            <p><strong>Overall Experience Rating:</strong> <span style="font-size: 18px; color: #059669; font-weight: bold;">${overall}</span></p>
+          </div>
+          
+          <div style="margin-top: 30px; padding: 15px; background-color: #ecfdf5; border-radius: 8px;">
+            <p style="margin: 0; color: #065f46; font-size: 14px;">
+              <strong>📧 Reply to:</strong> ${email}<br>
+              <strong>📞 Contact:</strong> ${contact}<br>
+              <strong>🏢 Company:</strong> ${company}<br>
+              <strong>🕒 Received:</strong> ${new Date().toLocaleString()}
+            </p>
+          </div>
+        </div>
+      `;
     } else {
       console.error('❌ Invalid form type:', formType);
       return res.status(400).json({
         success: false,
-        error: 'Invalid form type. Must be either "contact" or "service-request"'
+        error: 'Invalid form type. Must be "contact", "service-request", or "feedback"'
       });
     }
 
