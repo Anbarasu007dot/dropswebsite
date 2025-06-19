@@ -11,6 +11,18 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Drops Chemicals Email Server',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      sendEmail: '/api/send-email'
+    }
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
