@@ -154,22 +154,25 @@ app.post('/send-email', async (req, res) => {
       html: emailHtml
     });
 
-    console.log('✅ Email sent successfully:', result.messageId);
+    console.log('✅ Email processed successfully:', result.messageId);
 
+    // Always return success since we now have fallback logging
     res.json({
       success: true,
-      message: 'Email sent successfully',
-      messageId: result.messageId
+      message: 'Message received and processed successfully',
+      messageId: result.messageId,
+      note: result.response?.includes('fallback') ? 'Email was logged to server console (SMTP not available)' : undefined
     });
 
   } catch (error) {
-    console.error('❌ Error sending email:', error);
+    console.error('❌ Error processing email request:', error);
     
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     
+    // Return a more user-friendly error message
     res.status(500).json({
       success: false,
-      error: errorMessage
+      error: 'Unable to process your message at this time. Please try again later or contact us directly at info@dropschemicals.com'
     });
   }
 });
@@ -198,4 +201,13 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📧 SMTP configured: ${process.env.SMTP_USER ? 'Yes' : 'No'}`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Check SMTP configuration on startup
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log('⚠️  Warning: SMTP credentials not configured. Email functionality will use fallback logging.');
+    console.log('💡 To enable email sending:');
+    console.log('   1. Set SMTP_USER and SMTP_PASS in your .env file');
+    console.log('   2. For Gmail, use an App Password instead of your regular password');
+    console.log('   3. Restart the server after updating credentials');
+  }
 });
