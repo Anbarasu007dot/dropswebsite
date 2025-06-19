@@ -147,8 +147,13 @@ export const Testimonials = () => {
             {testimonials.map((testimonial, index) => (
               <Card
                 key={`first-${index}`}
-                className="professional-card bg-black/30 backdrop-blur-lg border-white/20 text-white testimonial-hover min-w-[320px] max-w-xs w-[320px] cursor-pointer flex-shrink-0"
-                style={{ flex: "0 0 320px" }}
+                className="testimonial-hover min-w-[320px] max-w-xs w-[320px] flex-shrink-0 border-white/20 text-white"
+                style={{ 
+                  flex: "0 0 320px",
+                  backgroundColor: 'transparent',
+                  backdropFilter: 'none',
+                  background: 'transparent'
+                }}
               >
                 <CardContent className="p-8">
                   <div className="flex items-center mb-4">
@@ -178,8 +183,13 @@ export const Testimonials = () => {
             {testimonials.map((testimonial, index) => (
               <Card
                 key={`second-${index}`}
-                className="professional-card bg-black/30 backdrop-blur-lg border-white/20 text-white testimonial-hover min-w-[320px] max-w-xs w-[320px] cursor-pointer flex-shrink-0"
-                style={{ flex: "0 0 320px" }}
+                className="testimonial-hover min-w-[320px] max-w-xs w-[320px] flex-shrink-0 border-white/20 text-white"
+                style={{ 
+                  flex: "0 0 320px",
+                  backgroundColor: 'transparent',
+                  backdropFilter: 'none',
+                  background: 'transparent'
+                }}
               >
                 <CardContent className="p-8">
                   <div className="flex items-center mb-4">
@@ -227,8 +237,13 @@ export const Testimonials = () => {
             {testimonials.map((testimonial, index) => (
               <Card
                 key={`mobile-first-${index}`}
-                className="professional-card bg-black/30 backdrop-blur-lg border-white/20 text-white testimonial-hover min-w-[85vw] max-w-[90vw] cursor-pointer flex-shrink-0"
-                style={{ flex: "0 0 85vw" }}
+                className="testimonial-hover min-w-[85vw] max-w-[90vw] flex-shrink-0 border-white/20 text-white"
+                style={{ 
+                  flex: "0 0 85vw",
+                  backgroundColor: 'transparent',
+                  backdropFilter: 'none',
+                  background: 'transparent'
+                }}
               >
                 <CardContent className="p-8">
                   <div className="flex items-center mb-4">
@@ -258,8 +273,13 @@ export const Testimonials = () => {
             {testimonials.map((testimonial, index) => (
               <Card
                 key={`mobile-second-${index}`}
-                className="professional-card bg-black/30 backdrop-blur-lg border-white/20 text-white testimonial-hover min-w-[85vw] max-w-[90vw] cursor-pointer flex-shrink-0"
-                style={{ flex: "0 0 85vw" }}
+                className="testimonial-hover min-w-[85vw] max-w-[90vw] flex-shrink-0 border-white/20 text-white"
+                style={{ 
+                  flex: "0 0 85vw",
+                  backgroundColor: 'transparent',
+                  backdropFilter: 'none',
+                  background: 'transparent'
+                }}
               >
                 <CardContent className="p-8">
                   <div className="flex items-center mb-4">

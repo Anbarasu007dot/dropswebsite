@@ -224,10 +224,15 @@ export const QuickContact = () => {
               {contactInfo.map((info, index) => (
                 <Card 
                   key={index}
-                  className={`professional-card bg-black/60 backdrop-blur-md border-white/20 text-white transition-all duration-500 ${
+                  className={`border-white/20 text-white transition-all duration-500 ${
                     isVisible ? 'modern-scale-in' : 'opacity-0 scale-95'
                   }`}
-                  style={{ animationDelay: `${index * 0.2}s` }}
+                  style={{ 
+                    animationDelay: `${index * 0.2}s`,
+                    backgroundColor: 'transparent',
+                    backdropFilter: 'none',
+                    background: 'transparent'
+                  }}
                 >
                   <CardContent className="py-4 px-8 flex flex-row items-center h-full">
                     <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${info.color} flex items-center justify-center flex-shrink-0 mr-6`}>
@@ -247,7 +252,14 @@ export const QuickContact = () => {
 
           {/* Enhanced Contact Form */}
           <div>
-            <Card className="bg-black/60 backdrop-blur-md border-white/20 shadow-lg">
+            <Card 
+              className="border-white/20 shadow-lg"
+              style={{
+                backgroundColor: 'transparent',
+                backdropFilter: 'none',
+                background: 'transparent'
+              }}
+            >
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold text-white mb-6">Send us a Message</h3>
                 
@@ -274,7 +286,12 @@ export const QuickContact = () => {
                         onChange={handleInputChange}
                         placeholder="Your full name"
                         required
-                        className={`bg-white/20 border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                        className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                        style={{
+                          backgroundColor: 'transparent',
+                          backdropFilter: 'none',
+                          background: 'transparent'
+                        }}
                       />
                     </div>
                     <div className="space-y-2">
@@ -286,7 +303,12 @@ export const QuickContact = () => {
                         onChange={handleInputChange}
                         placeholder="your.email@company.com"
                         required
-                        className={`bg-white/20 border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                        className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                        style={{
+                          backgroundColor: 'transparent',
+                          backdropFilter: 'none',
+                          background: 'transparent'
+                        }}
                       />
                     </div>
                   </div>
@@ -299,7 +321,12 @@ export const QuickContact = () => {
                       onChange={handleInputChange}
                       placeholder="How can we help you?"
                       required
-                      className={`bg-white/20 border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                      className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-input ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                      style={{
+                        backgroundColor: 'transparent',
+                        backdropFilter: 'none',
+                        background: 'transparent'
+                      }}
                     />
                   </div>
 
@@ -312,7 +339,12 @@ export const QuickContact = () => {
                       placeholder="Tell us about your requirements..."
                       required
                       rows={5}
-                      className={`bg-white/20 border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-textarea resize-none ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                      className={`border-white/30 text-white placeholder:text-blue-200 focus:border-blue-400 professional-textarea resize-none ${submitStatus === 'error' ? 'border-red-400' : ''}`}
+                      style={{
+                        backgroundColor: 'transparent',
+                        backdropFilter: 'none',
+                        background: 'transparent'
+                      }}
                     />
                   </div>
 

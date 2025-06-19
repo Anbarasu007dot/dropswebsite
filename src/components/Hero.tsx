@@ -93,13 +93,13 @@ export const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           <div className={`transition-all duration-800 ${isVisible ? 'modern-fade-in' : 'opacity-0 translate-y-10'}`}>
-            <h1 className="professional-heading mb-6 text-white">
+            <h1 className="professional-heading mb-6" style={{ color: '#FFFFFF' }}>
               Expert Manufacturing
               <span className="block mt-2">
                 <span className="inline-block">
                   &nbsp;&&nbsp;
-                  <span aria-label="Supply Excellence" className="inline-block relative z-20 text-white">
-                    <span className="supply-typing-text">
+                  <span aria-label="Supply Excellence" className="inline-block relative z-20" style={{ color: '#FFFFFF' }}>
+                    <span className="supply-typing-text" style={{ color: '#FFFFFF' }}>
                       {supplyText}
                     </span>
                     <span className="type-cursor">|</span>

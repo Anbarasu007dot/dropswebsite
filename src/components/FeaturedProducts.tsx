@@ -120,7 +120,7 @@ export const FeaturedProducts = () => {
                   className={`interactive-card overflow-visible transition-all duration-500 rounded-2xl ${
                     isVisible ? 'classic-scale-in' : 'opacity-0 scale-95'
                   } ${hoveredCard === index ? '' : ''} ${selectedProduct === product.category ? 'ring-4 ring-blue-400 scale-105 shadow-[0_0_32px_8px_rgba(37,99,235,0.35)] z-20' : ''}`}
-                  style={{ animationDelay: `${index * 0.2}s`, cursor: 'pointer' }}
+                  style={{ animationDelay: `${index * 0.2}s` }}
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
                   onMouseDown={() => setSelectedProduct(product.category)}
@@ -169,7 +169,8 @@ export const FeaturedProducts = () => {
                         <div className="flex flex-col sm:flex-row gap-4 pt-3 mt-auto">
                           <Button
                             asChild
-                            className="secondary-button flex items-center justify-center px-8 py-3 rounded-xl font-semibold text-lg bg-blue-600 text-white border-2 border-blue-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 group hover:bg-blue-700 hover:border-blue-700 hover:scale-105 hover:shadow-[0_0_16px_4px_rgba(37,99,235,0.45)] shadow-[0_2px_8px_0_rgba(37,99,235,0.15)]"
+                            className="secondary-button flex items-center justify-center px-8 py-3 rounded-xl font-semibold text-lg text-white border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 group hover:scale-105 hover:shadow-[0_0_16px_4px_rgba(79,195,247,0.45)] shadow-[0_2px_8px_0_rgba(79,195,247,0.15)]"
+                            style={{ backgroundColor: '#4FC3F7', borderColor: '#4FC3F7' }}
                             onClick={e => e.stopPropagation()}
                           >
                             <Link to={productUrl} replace={false} reloadDocument={false} className="flex items-center">
